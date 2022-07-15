@@ -2,10 +2,11 @@ package main
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
@@ -43,7 +44,8 @@ func execute(input string) error {
 	case "cd $arg":
 		// cd to home dir with empty path not supported
 		if len(args) < 1 {
-			return errors.New("A specific path is required")
+			//return errors.New("A specific path is required")
+			return fmt.Errorf("a specific path is required for the 'cd' command")
 		}
 		// cd into specified path held in args[1] and return the error
 		return os.Chdir(args[1])
@@ -56,6 +58,14 @@ func execute(input string) error {
 			temp = " "
 		}
 		fmt.Println(str)
+
+	case "ls":
+		// print names of files in current or specified directory
+		//   -- will not visibly differentiate between files and directories with contents, as in traditional bash or zsh
+		_, err := filepath.Glob("*")
+		if err != nil {
+			log.Panic(err)
+		}
 
 	case "exit":
 		// does what is says
